@@ -12,12 +12,12 @@ Repositório de estudos em OpenGL utilizando Python e GLFW.
 
 ---
 
-## Triângulo colorido
+## Triângulo Colorido
 
 - Desenho de um triângulo na tela
 - Aplicação de cores
 - Primeiro contato com o pipeline de renderização
 
-![Triângulo colorido](IMAGENS/aula02_triangulo.png)
+<img src="IMAGENS/aula02_triangulo.png" alt="Triângulo Colorido" width="400">
 
 ---
