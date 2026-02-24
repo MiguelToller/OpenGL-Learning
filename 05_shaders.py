@@ -50,9 +50,9 @@ def init():
     glBindVertexArray(0)
 
     # Codigo fonte dos shaders
-    with open('05.1_vertexShader.glsl', 'r') as file:
+    with open('06_vertexShader.glsl', 'r') as file:
         vsSource = file.read()
-    with open('05.2_fragmentShader.glsl', 'r') as file:
+    with open('06_fragmentShader.glsl', 'r') as file:
         fsSource = file.read()
 
     vsId = gls.compileShader(vsSource, GL_VERTEX_SHADER)
@@ -91,7 +91,7 @@ def render():
 # Função Principal
 def main():
     glfw.init()                                                          # Inicializa a API GLFW
-    window = glfw.create_window(500, 500, '04 - vbo-vao', None, None)    # Criando a janela
+    window = glfw.create_window(500, 500, '05 - shaders', None, None)    # Criando a janela
     glfw.make_context_current(window)                                    # Contexto OpenGL na janela
     init()
     while not glfw.window_should_close(window):                          # Enquanto a janela não é fechada
