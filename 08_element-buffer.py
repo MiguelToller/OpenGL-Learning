@@ -5,26 +5,36 @@ import numpy as np
 import ctypes
 
 vertices = [
-    [-0.8,-0.8, 1,0,0],
-    [ 0.0,-0.8, 1,1,0],
-    [-0.4, 0.0, 1,0,1],
-    [ 0.0,-0.8, 1,1,0],
-    [ 0.8,-0.8, 0,1,0],
-    [ 0.4, 0.0, 0,1,1],
-    [-0.4, 0.0, 1,0,1],
-    [ 0.4, 0.0, 0,1,1],
-    [ 0.0, 0.8, 0,0,1],
+    [-0.8,-0.8, 1,0,0], # v0
+    [ 0.0,-0.8, 1,0,0], # v1 - vermelho
+    [ 0.0,-0.8, 0,1,0], # v2 - verde
+    [ 0.0,-0.8, 1,1,0], # v3 - amarelo
+    [ 0.8,-0.8, 0,1,0], # v4
+    [-0.4, 0.0, 1,0,0], # v5 - vermelho
+    [-0.4, 0.0, 1,0,1], # v6 - magenta
+    [ 0.4, 0.0, 0,1,0], # v7 - verde
+    [ 0.4, 0.0, 0,1,1], # v8 - ciano
+    [ 0.0, 0.8, 0,0,1], # v9
 ]
+
+faces = [
+    [0,1,5], # face inferior esquerda
+    [2,4,7], # face inferior direita
+    [6,8,9], # face superior
+    [3,8,6]  # face do meio
+]
+
 qtd_vertices = len(vertices)
+qtd_faces = len(faces)
 vaoId = 0
 shaderId = 0
 
 # Função para configurações iniciais da minha aplicação
 def init():
-    global vertices, vaoId, shaderId
+    global vertices, faces, vaoId, shaderId
     glClearColor(1,1,1,1)
 
-    vertices = np.array(vertices, np.dtype(np.float32)) # 4 bytes ou 32 bits
+    vertices = np.array(vertices, dtype=np.float32) # 4 bytes ou 32 bits
 
     vaoId = glGenVertexArrays(1)         # Criar o VAO
     glBindVertexArray(vaoId)             # Tornando VAO ativo
@@ -53,6 +63,15 @@ def init():
     glEnableVertexAttribArray(0)         # Habilitando o atributo posicao (location = 0)
     glEnableVertexAttribArray(1)         # Habilitando o atributo cor (location = 1)
 
+    # Criando EBO
+    faces = np.array(faces, dtype=np.uint32)
+    eboId = glGenBuffers(1)
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER ,eboId)
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER,
+                 faces.nbytes,
+                 faces,
+                 GL_STATIC_DRAW)
+
     glBindBuffer(GL_ARRAY_BUFFER, 0)
     glBindVertexArray(0)
 
@@ -66,39 +85,24 @@ def init():
     fsId = gls.compileShader(fsSource, GL_FRAGMENT_SHADER)
     shaderId = gls.compileProgram(vsId, fsId)
 
-    # vsId = glCreateShader(GL_VERTEX_SHADER)         # Criar o objeto vertex shader
-    # glShaderSource(vsId, vsSource)                  # Enviar o codigo-fonte do vertex shader para esse objeto
-    # glCompileShader(vsId)                           # Compilar o vertex shader
-    # if not glGetShaderiv(vsId, GL_COMPILE_STATUS):  # Verificar por erros no vertex shader
-    #     info = glGetShaderInfoLog(vsId)
-    #     print('Erro de compilacao no vertex shader... \n', info)
-
-    # fsId = glCreateShader(GL_FRAGMENT_SHADER)       # Criar o objeto vertex shader
-    # glShaderSource(fsId, fsSource)                  # Enviar o codigo-fonte do vertex shader para esse objeto
-    # glCompileShader(fsId)                           # Compilar o vertex shader
-    # if not glGetShaderiv(fsId, GL_COMPILE_STATUS):  # Verificar por erros no vertex shader
-    #     info = glGetShaderInfoLog(fsId)
-    #     print('Erro de compilacao no fragment shader... \n', info)
-
-    # shaderId = glCreateProgram()    # Criar um shader program
-    # glAttachShader(shaderId, vsId)
-    # glAttachShader(shaderId, fsId)
-    # glLinkProgram(shaderId)
-
 # Função para atualizar a renderização da cena
 def render():
     glClear(GL_COLOR_BUFFER_BIT)
 
     glUseProgram(shaderId)
     glBindVertexArray(vaoId)
-    glDrawArrays(GL_TRIANGLES, 0, qtd_vertices)
+    # glDrawArrays(GL_TRIANGLES, 0, qtd_vertices)
+    glDrawElements(GL_TRIANGLES,    # Primitiva
+                   3*qtd_faces,     # Qtd de indices
+                   GL_UNSIGNED_INT, # Tipo de dados (GL_UNSIGNED_BYTE/GL_UNSIGNED_SHORT)
+                   None)
     glBindVertexArray(0)
     glUseProgram(0)
 
 # Função Principal
 def main():
     glfw.init()                                                          # Inicializa a API GLFW
-    window = glfw.create_window(500, 500, '07 - atributos', None, None)    # Criando a janela
+    window = glfw.create_window(500, 500, '08 - element-buffer', None, None)  # Criando a janela
     glfw.make_context_current(window)                                    # Contexto OpenGL na janela
     init()
     while not glfw.window_should_close(window):                          # Enquanto a janela não é fechada
