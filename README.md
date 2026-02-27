@@ -21,3 +21,10 @@ Repositório de estudos em OpenGL utilizando Python e GLFW.
 <img src="IMAGENS/aula02_triangulo.png" alt="Triângulo Colorido" width="400">
 
 ---
+
+## Triângulos Interpolados
+
+- Teoria da Interpolação
+- Modificação de atributos
+
+<img src="IMAGENS/aula07_interpolacao.png" alt="Triângulos Interpolados" width="400">
